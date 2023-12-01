@@ -14,6 +14,10 @@ spec:
         app: webapi
     spec:
       containers:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv mysql-service 3306; do echo "Waiting for MySQL service..."; sleep 5; done']
         - name: webapi
           image: zackz001/emartapp-webapi:v1
           ports:
@@ -22,6 +26,3 @@ spec:
             httpGet:
               path: /healthz
               port: 9000
-          dependsOn:
-            - name: mysql-deployment
-              condition: Ready

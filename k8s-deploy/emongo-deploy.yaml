@@ -41,7 +41,7 @@ spec:
         app: mongo
     spec:
       containers:
-        - name: mongo
+        - name: emongo
           image: mongo:4
           env:
             - name: MONGO_INITDB_DATABASE 

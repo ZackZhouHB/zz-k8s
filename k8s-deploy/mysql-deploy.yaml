@@ -41,7 +41,7 @@ spec:
         app: mysql
     spec:
       containers:
-        - name: mysql
+        - name: emartdb
           image: mysql:8.0.33
           env:
             - name: MYSQL_ROOT_PASSWORD

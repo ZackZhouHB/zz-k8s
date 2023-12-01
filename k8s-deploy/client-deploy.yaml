@@ -1,25 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
-  labels:
-    app: k8s-mssvc
-  name: k8s-mssvc
-  namespace: k8s-microsvc 
+  name: client-deployment
+  namespace: k8s-microsvc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8s-mssvc
-  strategy: {}
+      app: client
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: k8s-mssvc
+        app: client
     spec:
       containers:
-      - image: zackz001/emartapp-client:v1
-        name: emartapp-client
-        resources: {}
-status: {}
+      initContainers:
+        - name: wait-for-webapi
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv webapi-service 9000; do echo "Waiting for webapi service..."; sleep 5; done']
+      initContainers:
+        - name: wait-for-api
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv api-service 5000; do echo "Waiting for api service..."; sleep 5; done']
+        - name: client
+          image: zackz001/emartapp-client:v1
+          ports:
+            - containerPort: 4200
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 4200

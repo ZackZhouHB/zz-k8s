@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  namespace: k8s-microsvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      initContainers:
+        - name: wait-for-nginx
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv nginx-service 80; do echo "Waiting for nginx service..."; sleep 5; done']
+      initContainers:
+        - name: wait-for-emongo
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv emongo-service 27017; do echo "Waiting for emongo service..."; sleep 5; done']
+        - name: api
+          image: zackz001/emartapp-api:v1
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+          dependsOn:
+            - name: mongo-deployment
+              condition: Ready
+            - name: nginx0deployment
+              condition: Ready
+
