@@ -28,17 +28,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo-deployment
+  name: emongo-deploy
   namespace: k8s-microsvc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo
+      app: emongo
   template:
     metadata:
       labels:
-        app: mongo
+        app: emongo
     spec:
       containers:
         - name: emongo

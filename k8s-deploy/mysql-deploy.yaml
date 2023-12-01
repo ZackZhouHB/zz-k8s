@@ -28,17 +28,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment
+  name: mysql-deploy
   namespace: k8s-microsvc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      app: emartdb
   template:
     metadata:
       labels:
-        app: mysql
+        app: emartdb
     spec:
       containers:
         - name: emartdb

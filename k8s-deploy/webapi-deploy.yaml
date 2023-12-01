@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapi-deployment
+  name: webapi-deploy
   namespace: k8s-microsvc
 spec:
   replicas: 1
@@ -14,6 +14,10 @@ spec:
       labels:
         app: webapi
     spec: 
+      initContainers:
+        - name: wait-for-emartdb
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv emartdb-service 3306; do echo "Waiting for MySQL service..."; sleep 5; done']
       containers:
         - name: webapi
           image: zackz001/emartapp-webapi:v1

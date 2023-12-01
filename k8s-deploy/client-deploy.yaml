@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-deployment
+  name: client-deploy
   namespace: k8s-microsvc
 spec:
   replicas: 1
@@ -14,6 +14,13 @@ spec:
       labels:
         app: client
     spec:
+      initContainers:
+        - name: wait-for-api
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv api-service 5000; do echo "Waiting for api service..."; sleep 5; done']
+        - name: wait-for-webapi
+          image: busybox:1.34
+          command: ['sh', '-c', 'until nc -zv webapi-service 9000; do echo "Waiting for webapi service..."; sleep 5; done']
       containers:
         - name: client
           image: zackz001/emartapp-client:v1
