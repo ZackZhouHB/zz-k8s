@@ -14,10 +14,10 @@ spec:
       labels:
         app: webapi
     spec: 
-      initContainers:
-        - name: wait-for-emartdb
-          image: busybox:latest
-          command: ['sh', '-c', 'until nc -zv emartdb-service 3306; do echo "Waiting for MySQL service..."; sleep 5; done']
+#      initContainers:
+#        - name: wait-for-emartdb
+#          image: busybox:latest
+#          command: ['sh', '-c', 'until nc -zv emartdb-service 3306; do echo "Waiting for MySQL service..."; sleep 5; done']
       containers:
         - name: webapi
           image: zackz001/emartapp-webapi:v1

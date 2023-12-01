@@ -15,10 +15,10 @@ spec:
       labels:
         app: nginx
     spec:
-      initContainers:
-        - name: wait-for-client
-          image: busybox:latest
-          command: ['sh', '-c', 'until nc -zv client-service 4200; do echo "Waiting for client service..."; sleep 5; done']
+#      initContainers:
+#        - name: wait-for-client
+#          image: busybox:latest
+#          command: ['sh', '-c', 'until nc -zv client-service 4200; do echo "Waiting for client service..."; sleep 5; done']
       containers:
         - name: nginx
           image: nginx:latest
