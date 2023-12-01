@@ -1,14 +1,14 @@
 # Java Demo For DevOps 
 
-#### 描述 
-DevOps Java项目
+#### Description
+DevOps Java Project
 
-#### 编译命令
+#### Compile command
 mvn clean install -DskipTests
 
-#### 启动命令
+#### Start Command
 java -jar xxxx.jar
 
-#### 访问
+#### Access
 http://xxxxxx:8761
 
