@@ -8,6 +8,6 @@ spec:
     app: client
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4200
+      port: 4200
+      targetPort: client-port
   type: ClusterIP

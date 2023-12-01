@@ -9,5 +9,5 @@ spec:
   ports:
     - protocol: TCP
       port: 27017
-      targetPort: 27017
+      targetPort: emongo-port
   type: ClusterIP
