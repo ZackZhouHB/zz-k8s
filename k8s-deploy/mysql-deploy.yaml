@@ -45,10 +45,7 @@ spec:
           image: mysql:8.0.33
           env:
             - name: MYSQL_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: mysql-secret
-                  key: mysql-root-password
+              value: emartdbpass  # Specify the default database name
             - name: MYSQL_DATABASE
               value: books  # Specify the default database name
           ports:
