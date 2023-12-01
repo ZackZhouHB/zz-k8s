@@ -1,126 +1,87 @@
 pipeline {
     agent any
-	
-	environment {
-        clientRegistry = "repository.k8sengineers.com/apexrepo/client"
-        booksRegistry = "repository.k8sengineers.com/apexrepo/books"
-        mainRegistry = "repository.k8sengineers.com/apexrepo/main"
-        registryCredential = 'NexusRepoLogin'
-        cartRegistry = "https://repository.k8sengineers.com"
+    environment {
+        DOCKERHUB_USERNAME = "kunchalavikram"
+        APP_NAME = "gitops-demo-app"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_NAME = "${DOCKERHUB_USERNAME}" + "/" + "${APP_NAME}"
+        REGISTRY_CREDS = 'dockerhub'
+        }
+    stages {
+        stage('Cleanup Workspace'){
+            steps {
+                script {
+                    cleanWs()
+                }
+            }
+        }
+        stage('Checkout SCM'){
+            steps {
+                git credentialsId: 'github', 
+                url: 'https://github.com/kunchalavikram1427/gitops-demo.git',
+                branch: 'dev'
+            }
+        }
+        stage('Build Docker Image'){
+            steps {
+                script{
+                    docker_image = docker.build "${IMAGE_NAME}"
+                }
+            }
+        }
+        stage('Push Docker Image'){
+            steps {
+                script{
+                    docker.withRegistry('', REGISTRY_CREDS ){
+                        docker_image.push("${BUILD_NUMBER}")
+                        docker_image.push('latest')
+                    }
+                }
+            }
+        } 
+        stage('Delete Docker Images'){
+            steps {
+                sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "docker rmi ${IMAGE_NAME}:latest"
+            }
+        }
+        stage('Updating Kubernetes deployment file'){
+            steps {
+                sh "cat deployment.yml"
+                sh "sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yml"
+                sh "cat deployment.yml"
+            }
+        }
+        stage('Push the changed deployment file to Git'){
+            steps {
+                script{
+                    sh """
+                    git config --global user.name "vikram"
+                    git config --global user.email "vikram@gmail.com"
+                    git add deployment.yml
+                    git commit -m 'Updated the deployment file' """
+                    withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                        sh "git push http://$user:$pass@github.com/kunchalavikram1427/gitops-demo.git dev"
+                    }
+                }
+            }
+        }
     }
-	
-	stages {
-	
-	  stage('Build Angular Image') {
-        when { changeset "client/*"}
-	     steps {
-		   
-		     script {
-                dockerImage = docker.build( clientRegistry + ":$BUILD_NUMBER", "./client/")
-             }
-
-		 }
-	  
-	  }
-	  
-	  stage('Deploy Angular Image') {
-          when { changeset "client/*"}
-          steps{
-            script {
-              docker.withRegistry( cartRegistry, registryCredential ) {
-                dockerImage.push("$BUILD_NUMBER")
-                dockerImage.push('latest')
-              }
-            }
-          }
-	   }
-
-       stage('Kubernetes Deploy Angular') {
-           when { changeset "client/*"}
-            steps {
-                  withCredentials([file(credentialsId: 'CartWheelKubeConfig1', variable: 'config')]){
-                    sh """
-                      export KUBECONFIG=\${config}
-                      pwd
-                      helm upgrade kubekart kkartchart --install --set "kkartcharts-frontend.image.client.tag=${BUILD_NUMBER}" --namespace kart
-                      """
-                  }
-                 }  
-        }
-
-        stage('Build books Image') {
-        when { changeset "javaapi/*"}
-	     steps {
-		   
-		     script {
-                dockerImage = docker.build( booksRegistry + ":$BUILD_NUMBER", "./javaapi/")
-             }
-
-		 }
-	  
-	  }
-	  
-	  stage('Deploy books Image') {
-          when { changeset "javaapi/*"}
-          steps{
-            script {
-              docker.withRegistry( cartRegistry, registryCredential ) {
-                dockerImage.push("$BUILD_NUMBER")
-                dockerImage.push('latest')
-              }
-            }
-          }
-	   }
-
-       stage('Kubernetes books Deploy') {
-           when { changeset "javaapi/*"}
-            steps {
-                  withCredentials([file(credentialsId: 'CartWheelKubeConfig1', variable: 'config')]){
-                    sh """
-                      export KUBECONFIG=\${config}
-                      pwd
-                      helm upgrade kubekart kkartchart --install --set "kkartcharts-backend.image.books.tag=${BUILD_NUMBER}" --namespace kart
-                      """
-                  }
-                 }  
-        }
-
-        stage('Build Main Image') {
-        when { changeset "nodeapi/*"}
-	     steps {
-		   
-		     script {
-                sh " sed -i 's/localhost/emongo/g' nodeapi/config/keys.js"
-                dockerImage = docker.build( mainRegistry + ":$BUILD_NUMBER", "./nodeapi/")
-             }
-
-		 }
-	  
-	  }
-	  
-	  stage('Deploy Main Image') {
-          when { changeset "nodeapi/*"}
-          steps{
-            script {
-              docker.withRegistry( cartRegistry, registryCredential ) {
-                dockerImage.push("$BUILD_NUMBER")
-                dockerImage.push('latest')
-              }
-            }
-          }
-	   }
-
-       stage('Kubernetes Main Deploy') {
-           when { changeset "nodeapi/*"}
-            steps {
-                  withCredentials([file(credentialsId: 'CartWheelKubeConfig1', variable: 'config')]){
-                    sh """
-                      export KUBECONFIG=\${config}
-                      pwd
-                      helm upgrade kubekart kkartchart --install --set "kkartcharts-backend.image.main.tag=${BUILD_NUMBER}" --namespace kart
-                      """
-                  }
-                 }  
-        }
-	}
 }
+
+
+// stage('Build Docker Image'){
+//             steps {
+//                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+//                 sh "docker build -t ${IMAGE_NAME}:latest ."
+//             }
+//         }
+//         stage('Push Docker Image'){
+//             steps {
+//                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
+//                     sh "docker login -u $user --password $pass"
+//                     sh "docker push ${IMAGE_NAME}:${IMAGE_TAG} ."
+//                     sh "docker push ${IMAGE_NAME}:latest ."
+//                 }
+//             }
+//         }
