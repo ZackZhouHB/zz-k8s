@@ -1,3 +1,5 @@
+# I want to create a service by using yaml for bellow deployment :
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
