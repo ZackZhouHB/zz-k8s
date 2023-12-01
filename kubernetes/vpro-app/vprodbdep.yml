@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vprodb
+  labels:
+    app: vprodb
+spec:
+  selector:
+    matchLabels:
+      app: vprodb
+  replicas: 1   # 1 = we just need 1 DB #
+  template:
+    metadata:
+      labels:
+        app: vprodb
+    spec:      # specification for pod #
+      containers:
+      - name: vprodb
+        image: zackz001/redo20-e4-db:v2
+        #imagePullPolicy: IfNotPresent
+        #args:
+        #  - "--ignore-db-dir=lost+found"
+        volumeMounts:                           # mount volume to local pvc
+        - mountPath: /var/lib/mysql
+          name: vprodb-storage
+        ports:
+        - name: vprodb-port
+          containerPort: 3306
+        env:               # fetch dbname and pass from env var app-secret.yml file #
+         - name: MYSQL_ROOT_PASSWORD             
+           valueFrom:
+             secretKeyRef:
+               name: app-secret
+               key: db-pass
+      nodeSelector:         # DB running same label with the volume created on before #
+        app: zz              # DB will schedule on the node with this label 
+      volumes:  # volume must with tag for clustername + route53 domane
+        - name: vprodb-storage
+          persistentVolumeClaim:
+            claimName: vprodb-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vprodb-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/data/vprodb/data"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vprodb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deploy
+  namespace: k8s-microsvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emartdb
+  template:
+    metadata:
+      labels:
+        app: emartdb
+    spec:
+      containers:
+        - name: emartdb
+          image: mysql:8.0.33
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              value: books  # Specify the default database name
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
