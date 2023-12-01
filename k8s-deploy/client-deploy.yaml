@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: k8s-mssvc
+  name: k8s-mssvc
+  namespace: k8s-microsvc 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-mssvc
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: k8s-mssvc
+    spec:
+      containers:
+      - image: zackz001/emartapp-client:v1
+        name: emartapp-client
+        resources: {}
+status: {}
