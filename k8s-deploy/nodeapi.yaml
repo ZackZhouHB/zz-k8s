@@ -14,13 +14,6 @@ spec:
       labels:
         app: api
     spec:
-      initContainers:
-        - name: wait-for-nginx
-          image: busybox:1.34
-          command: ['sh', '-c', 'until nc -zv nginx-service 80; do echo "Waiting for nginx service..."; sleep 5; done']
-        - name: wait-for-emongo
-          image: busybox:1.34
-          command: ['sh', '-c', 'until nc -zv emongo-service 27017; do echo "Waiting for emongo service..."; sleep 5; done']
       containers:
         - name: api
           image: zackz001/emartapp-api:v1
