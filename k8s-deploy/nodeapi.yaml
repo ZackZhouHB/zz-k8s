@@ -19,7 +19,3 @@ spec:
           image: zackz001/emartapp-api:v1
           ports:
             - containerPort: 5000
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 5000

@@ -19,7 +19,3 @@ spec:
           image: zackz001/emartapp-webapi:v1
           ports:
             - containerPort: 9000
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 9000

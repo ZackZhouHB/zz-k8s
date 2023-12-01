@@ -19,7 +19,3 @@ spec:
           image: zackz001/emartapp-client:v1
           ports:
             - containerPort: 4200
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 4200
