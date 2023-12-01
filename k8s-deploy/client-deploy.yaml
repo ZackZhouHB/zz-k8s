@@ -16,10 +16,10 @@ spec:
     spec:
       initContainers:
         - name: wait-for-api
-          image: busybox:1.34
-          command: ['sh', '-c', 'until nc -zv api-service 5000; do echo "Waiting for api service..."; sleep 5; done']
+          image: busybox:latest
+          command: ['sh', '-c', 'until nc -z api-service 5000; do echo "Waiting for api service..."; sleep 2; done']
         - name: wait-for-webapi
-          image: busybox:1.34
+          image: busybox:latest
           command: ['sh', '-c', 'until nc -zv webapi-service 9000; do echo "Waiting for webapi service..."; sleep 5; done']
       containers:
         - name: client
