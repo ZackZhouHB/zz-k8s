@@ -1,3 +1,2 @@
-#ignore all key
-.pem
-.pub
+*.exe
+*vendor*
