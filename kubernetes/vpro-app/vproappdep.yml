@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vproapp
-        image: zackz001/redo20-e4-app:v2   # github image
+        image: zackz001/redo20-e4-app:latest   # github image
         ports:
         - name: vproapp-port
           containerPort: 8080
