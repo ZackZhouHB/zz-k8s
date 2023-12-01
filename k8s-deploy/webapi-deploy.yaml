@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapi-deployment
+  namespace: k8s-microsvc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapi
+  template:
+    metadata:
+      labels:
+        app: webapi
+    spec:
+      containers:
+        - name: webapi
+          image: zackz001/emartapp-webapi:v1
+          ports:
+            - containerPort: 9000
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 9000
+          dependsOn:
+            - name: mysql-deployment
+              condition: Ready
