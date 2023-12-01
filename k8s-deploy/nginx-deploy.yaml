@@ -1,5 +1,31 @@
 # I want to create a service by using yaml for bellow deployment :
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ngnix-pv
+  namespace: k8s-microsvc
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/data/nginx/data"
 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc
+  namespace: k8s-microsvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,6 +57,6 @@ spec:
               subPath: default.conf
       volumes:
         - name: nginx-config-volume
-          configMap:
-            name: nginx-config
+          persistentVolumeClaim:
+            claimName: nginx-pvc
 
