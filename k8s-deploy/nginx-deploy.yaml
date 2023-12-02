@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/opt/data/nginx/data"
+    path: "/opt/data/nginx/data/"
 
 ---
 apiVersion: v1
@@ -53,8 +53,8 @@ spec:
               name: nginx-port
           volumeMounts:
             - name: nginx-config-volume
-              mountPath: /etc/nginx/conf.d/default.conf
-              subPath: default.conf
+              mountPath: /etc/nginx/conf.d/
+
       volumes:
         - name: nginx-config-volume
           persistentVolumeClaim:
