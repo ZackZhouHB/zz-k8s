@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: "2023-12-02T09:18:51Z"
+  labels:
+    kubernetes.io/metadata.name: ms
+  name: ms
+  resourceVersion: "1000500"
+  uid: 44f60f0a-abaa-4d91-a5c2-9145d9df3a28
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
