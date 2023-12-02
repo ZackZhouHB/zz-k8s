@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  "react-ui"
+  namespace: ms
+  labels:
+    app:  "react-ui"
+spec:
+  selector:
+    matchLabels:
+      app: "react-ui"
+  template:
+    metadata:
+      labels:
+        app:  "react-ui"
+    spec:
+      - name:  "react-ui"
+        image:  zackz001/mssvc02:v1
+        ports:
+        - containerPort:  8080
+          name:  "react-ui"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "react-ui"
+  namespace: ms
+spec:
+  selector:
+    app: "react-ui"
+  type: NodePort
+  ports:
+  - name: "react-ui"
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
