@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name:  "offer"
-        image:  zackz001/mssvc02-offer:v1
+        image:  deekshithsn/offer
         ports:
         - containerPort:  1001
           name:  "offer"

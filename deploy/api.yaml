@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name:  "zuul-api-gateway"
-        image: zackz001/mssvc02-zuul:v1
+        image: deekshithsn/zuul
         ports:
         - containerPort:  9999
-          name:  "zuul-api-gateway"
+          name:  "zuul-api"
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

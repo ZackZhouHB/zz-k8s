@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name:  "cart"
-        image:  zackz001/mssvc02-cart:v1
+        image:  deekshithsn/cart
         ports:
         - containerPort:  1004
           name:  "cart"

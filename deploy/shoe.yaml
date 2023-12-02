@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name:  "shoe"
-        image:  zackz001/mssvc02-shoe:v1
+        image:  deekshithsn/shoe
         ports:
         - containerPort:  1002
           name:  "shoe"
@@ -25,13 +25,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "shoe"
+  name: shoe
   namespace: ms
 spec:
   selector:
     app: "shoe"
   type: ClusterIP
   ports:
-  - name: "shoe"
+  - name: shoe
     port: 1002
     targetPort: 1002
