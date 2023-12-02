@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/opt/data/nginx/data/"
+    path: "/opt/data/nginx/data/nginx.conf"
 
 ---
 apiVersion: v1
