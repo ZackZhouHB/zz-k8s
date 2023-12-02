@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  "offer"
+  namespace: ms
+  labels:
+    app:  "offer"
+spec:
+  selector:
+    matchLabels:
+      app: "offer"
+  template:
+    metadata:
+      labels:
+        app:  "offer"
+    spec:
+      containers:
+      - name:  "offer"
+        image:  zackz001/mssvc02-offer:v1
+        ports:
+        - containerPort:  1001
+          name:  "offer"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "offer"
+  namespace: ms
+spec:
+  selector:
+    app: "offer"
+  type: ClusterIP
+  ports:
+  - name: "offer"
+    port: 1001
+    targetPort: 1001

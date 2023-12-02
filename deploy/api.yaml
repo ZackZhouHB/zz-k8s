@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  "zuul-api-gateway"
-  namespace: default
+  namespace: ms
   labels:
     app:  "zuul-api-gateway"
 spec:
