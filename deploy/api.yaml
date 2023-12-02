@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  "zuul-api-gateway"
+  namespace: default
+  labels:
+    app:  "zuul-api-gateway"
+spec:
+  selector:
+    matchLabels:
+      app: "zuul-api-gateway"
+  template:
+    metadata:
+      labels:
+        app:  "zuul-api-gateway"
+    spec:
+      containers:
+      - name:  "zuul-api-gateway"
+        image: zackz001/mssvc02-zuul:v1
+        ports:
+        - containerPort:  9999
+          name:  "zuul-api"
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - react-ui
+            topologyKey: "kubernetes.io/hostname"  # to place pod same node with ui-web      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "zuul-service"
+  namespace: ms
+spec:
+  selector:
+    app: "zuul-api-gateway"
+  type: NodePort
+  ports:
+  - name: "zuul-service"
+    port: 9999
+    targetPort: 9999
+    nodePort: 32470
