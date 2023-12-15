@@ -58,7 +58,7 @@ spec:
             cpu: 1000m
         volumeMounts:
         - name: elasticsearch-logging
-          mountPath: /usr/share/elasticsearch/data
+          mountPath: /data
         env:
         - name: cluster.name
           value: k8s-logs
@@ -81,7 +81,7 @@ spec:
       name: elasticsearch-logging
     spec:
       storageClassName: "rook-ceph-block"
-      accessModes: [ "ReadWriteMany" ]
+      accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 2Gi
