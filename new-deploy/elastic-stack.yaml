@@ -311,6 +311,7 @@ spec:
   - port: 5601
     protocol: TCP
     targetPort: ui
+    nodePort: 30006
   selector:
     k8s-app: kibana-logging
   type: NodePort
