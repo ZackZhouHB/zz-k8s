@@ -81,7 +81,7 @@ spec:
       name: elasticsearch-logging
     spec:
       storageClassName: "rook-ceph-block"
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: [ "ReadWriteMany" ]
       resources:
         requests:
           storage: 2Gi
