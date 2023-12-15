@@ -1419,32 +1419,7 @@ data:
   ENDPOINTS_CHECKOUT: http://checkout
   ENDPOINTS_ORDERS: http://orders
   ENDPOINTS_ASSETS: http://assets
----
-# Source: ui/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: ui
-  labels:
-    helm.sh/chart: ui-0.0.1
-    app.kubernetes.io/name: ui
-    app.kubernetes.io/instance: ui
-    app.kubernetes.io/component: service
-    app.kuberneres.io/owner: retail-store-sample
-    app.kubernetes.io/managed-by: Helm
-spec:
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-      nodePort: 30002
-  selector:
-    app.kubernetes.io/name: ui
-    app.kubernetes.io/instance: ui
-    app.kubernetes.io/component: service
-    app.kuberneres.io/owner: retail-store-sample
+
 ---
 # Source: ui/templates/deployment.yaml
 apiVersion: apps/v1
