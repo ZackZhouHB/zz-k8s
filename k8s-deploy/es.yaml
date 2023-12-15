@@ -80,7 +80,7 @@ spec:
   - metadata:
       name: elasticsearch-logging
     spec:
-      storageClassName: "ok-ceph-block"
+      storageClassName: "rook-ceph-block"
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
